@@ -18,8 +18,6 @@ public class ShipController implements Controller {
 
 	@Override
 	public void handleEvent(Event event, Object component) {
-		if (event == Event.MOUSEMOVE) {
-			ship.setPositionX((int) component);
-		}
+		
 	}
 }

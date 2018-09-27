@@ -9,18 +9,20 @@ public class InteractiveComponentBuilder {
 	public static InteractiveComponent create(PApplet applet, String type) {
 		
 		InteractiveComponent component = null;
-		
 		TheApp app = (TheApp)applet;
 		
 		switch (type) {
 		case "Enemy":
 			component = new Enemy(app.getBombList());
+			Enemy e = (Enemy)component;
+			e.setShip(app.getShip());
 			break;
 		case "Ship":
 			component = new Ship(app.getFireList());
 			component.positionX = 200;
-			component.positionY = 350;
+			component.positionY = 360;
 			break;
+
 
 		}
 
@@ -28,6 +30,7 @@ public class InteractiveComponentBuilder {
 	}
 	
 	public static InteractiveComponent create(String type) {
+		
 		InteractiveComponent component = null;
 		
 		switch (type) {
@@ -36,6 +39,8 @@ public class InteractiveComponentBuilder {
 			break;
 		case "Bomb":
 			component = new Bomb();
+			break;
+
 		}
 
 		return component;

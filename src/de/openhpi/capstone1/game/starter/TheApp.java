@@ -11,6 +11,7 @@ import processing.core.PFont;
 public class TheApp extends PApplet {
 
 	Ship ship;
+
 	ArrayList<Enemy> enemyList;
 	ArrayList<Fire> fireList;
 	ArrayList<Bomb> bombList;
@@ -28,6 +29,7 @@ public class TheApp extends PApplet {
 	int enemyCount;
 
 	int score = 0;
+	boolean gameOver = false;
 	boolean superMode = false;
 
 	public ArrayList<Fire> getFireList() {
@@ -37,10 +39,14 @@ public class TheApp extends PApplet {
 	public ArrayList<Bomb> getBombList() {
 		return bombList;
 	}
+	
+	public Ship getShip() {
+		return ship;
+	}
 
 	@Override
 	public void settings() {
-		size(400, 420);
+		size(400, 460);
 
 	}
 
@@ -85,6 +91,10 @@ public class TheApp extends PApplet {
 		// additional views
 
 		background(255);
+		
+		fill(128);
+		line(0,360, 400,360);
+		line(0,420, 400,420);
 		fill(0);
 		drawEnemy();
 		drawShip();
@@ -137,7 +147,7 @@ public class TheApp extends PApplet {
 			enemyController.handleEvent(Event.LEFTEND);
 		}
 
-		if (enemyBottomY + 10 >= ship.getPositionY() - 5) { // reached spaceship
+		if (enemyBottomY + 10 >= 360) { // reached spaceship
 			gameOver("Lost");
 		}
 
@@ -195,7 +205,7 @@ public class TheApp extends PApplet {
 				if (detectBombHit(b)) { // bomb hit spaceship
 					gameOver("Lost");
 				}
-				if (b.getPositionY() >= 380) {
+				if (b.getPositionY() >= 420) {
 					bombController.handleEvent(Event.BOTTOMEND, b);
 				}
 			}
@@ -208,7 +218,7 @@ public class TheApp extends PApplet {
 	private void drawScore() {
 		textFont(font, 14);
 		fill(128);
-		text("SCORE: " + score, 20, 400);
+		text("SCORE: " + score, 20, 440);
 
 	}
 	
@@ -219,7 +229,7 @@ public class TheApp extends PApplet {
 			fill(255);
 		}
 		textFont(font, 14);
-		text("SUPER MODE", 280, 400);
+		text("SUPER MODE", 280, 440);
 	}
 
 	private boolean detectFireHit(Fire f, Enemy e) {
@@ -270,7 +280,10 @@ public class TheApp extends PApplet {
 		if ("Won".equals(result)) {
 			text("You Win!", 120, 200);
 		}
-
+		
+		textFont(font, 14);
+		text("Press R to restart", 150, 300);
+		gameOver = true;
 		noLoop();
 
 	}
@@ -291,8 +304,10 @@ public class TheApp extends PApplet {
 
 	@Override
 	public void mouseMoved() {
-		shipController.handleEvent(Event.MOUSEMOVE, mouseX);
-
+		ship.setPositionX(mouseX);
+		if (mouseY > 360 && mouseY < 400 ) {
+			ship.setPositionY(mouseY);
+		}
 	}
 
 	@Override
@@ -307,6 +322,15 @@ public class TheApp extends PApplet {
 			}
 		}
 
+		if (key == 'r' || key == 'R' && gameOver) {
+			
+			score = 0;
+			gameOver = false;
+			superMode = false;
+			setup();
+			background(255);
+			loop();
+		}
 	}
 
 

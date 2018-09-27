@@ -20,6 +20,7 @@ public class Enemy extends InteractiveComponent {
 
 	Direction direction = Direction.RIGHT;
 
+	private Ship ship;
 	private ArrayList<Bomb> bombList;
 
 	public Enemy(ArrayList<Bomb> bombList) {
@@ -36,6 +37,14 @@ public class Enemy extends InteractiveComponent {
 
 	public boolean isSuper() {
 		return isSuper;
+	}
+	
+	public Ship getShip() {
+		return ship;
+	}
+
+	public void setShip(Ship ship) {
+		this.ship = ship;
 	}
 
 	@Override
@@ -126,7 +135,12 @@ public class Enemy extends InteractiveComponent {
 		Bomb singleBomb = (Bomb) InteractiveComponentBuilder.create("Bomb");
 		singleBomb.positionX = e.positionX + 14;
 		singleBomb.positionY = e.positionY + 10;
-		singleBomb.bombType = type;
+		if (e.isSuper() && type == 1) {
+			singleBomb.bombType = 3;
+		}else {
+			singleBomb.bombType = type;
+		}
+		singleBomb.setShip(this.getShip());
 		return singleBomb;
 	}
 
