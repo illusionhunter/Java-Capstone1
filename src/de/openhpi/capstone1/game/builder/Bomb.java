@@ -25,6 +25,11 @@ public class Bomb extends InteractiveComponent {
 
 	@Override
 	public void handleEvent(Event event) {
+		
+		if(event == Event.BOMBHIT) {
+			this.isAlive = false;
+		}
+		
 		if (event == Event.BOTTOMEND) {
 			if (this.positionY >= 380) {
 				this.isAlive = false;

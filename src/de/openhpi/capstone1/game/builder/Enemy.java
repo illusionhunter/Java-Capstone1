@@ -135,7 +135,7 @@ public class Enemy extends InteractiveComponent {
 		Bomb singleBomb = (Bomb) InteractiveComponentBuilder.create("Bomb");
 		singleBomb.positionX = e.positionX + 14;
 		singleBomb.positionY = e.positionY + 10;
-		if (e.isSuper() && type == 1) {
+		if ((e.isSuper() || e.isHurt())&& type == 1) {
 			singleBomb.bombType = 3;
 		}else {
 			singleBomb.bombType = type;

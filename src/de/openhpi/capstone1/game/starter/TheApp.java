@@ -29,8 +29,9 @@ public class TheApp extends PApplet {
 	int enemyCount;
 
 	int score = 0;
-	boolean gameOver = false;
-	boolean superMode = false;
+	int lifeCount = 3;
+	boolean isGameOver = false;
+	boolean isSuperMode = false;
 
 	public ArrayList<Fire> getFireList() {
 		return fireList;
@@ -39,7 +40,7 @@ public class TheApp extends PApplet {
 	public ArrayList<Bomb> getBombList() {
 		return bombList;
 	}
-	
+
 	public Ship getShip() {
 		return ship;
 	}
@@ -91,10 +92,10 @@ public class TheApp extends PApplet {
 		// additional views
 
 		background(255);
-		
+
 		fill(128);
-		line(0,360, 400,360);
-		line(0,420, 400,420);
+		line(0, 360, 400, 360);
+		line(0, 420, 400, 420);
 		fill(0);
 		drawEnemy();
 		drawShip();
@@ -102,6 +103,7 @@ public class TheApp extends PApplet {
 		drawBomb();
 		drawScore();
 		drawSuperMode();
+		drawLifes();
 
 	}
 
@@ -179,9 +181,9 @@ public class TheApp extends PApplet {
 				for (Enemy e : enemyList) {
 					if (detectFireHit(f, e)) {
 						if (e.isSuper()) {
-							score += 50;
+							score += 500;
 						} else {
-							score += 10;
+							score += 100;
 						}
 						fireController.handleEvent(Event.FIREHIT, f);
 						enemyController.handleEvent(Event.FIREHIT, e);
@@ -203,7 +205,13 @@ public class TheApp extends PApplet {
 			if (b.isAlive()) {
 				rect(b.getPositionX(), b.getPositionY(), 1, 5);
 				if (detectBombHit(b)) { // bomb hit spaceship
-					gameOver("Lost");
+					lifeCount--;
+					if (lifeCount == 0) {
+						gameOver("Lost");
+					} else {
+						score -= 200;
+						bombController.handleEvent(Event.BOMBHIT, b);
+					}
 				}
 				if (b.getPositionY() >= 420) {
 					bombController.handleEvent(Event.BOTTOMEND, b);
@@ -221,15 +229,22 @@ public class TheApp extends PApplet {
 		text("SCORE: " + score, 20, 440);
 
 	}
-	
+
 	private void drawSuperMode() {
-		if (superMode) {
+		if (isSuperMode) {
 			fill(128);
-		}else {
+		} else {
 			fill(255);
 		}
 		textFont(font, 14);
 		text("SUPER MODE", 280, 440);
+	}
+
+	private void drawLifes() {
+		for (int i = lifeCount; i > 0; i--) {
+			fill(200);
+			rect(160 + i * 15, 430, 10, 10);
+		}
 	}
 
 	private boolean detectFireHit(Fire f, Enemy e) {
@@ -278,12 +293,13 @@ public class TheApp extends PApplet {
 		}
 
 		if ("Won".equals(result)) {
+			score += 500;
 			text("You Win!", 120, 200);
 		}
-		
+
 		textFont(font, 14);
 		text("Press R to restart", 150, 300);
-		gameOver = true;
+		isGameOver = true;
 		noLoop();
 
 	}
@@ -305,7 +321,7 @@ public class TheApp extends PApplet {
 	@Override
 	public void mouseMoved() {
 		ship.setPositionX(mouseX);
-		if (mouseY > 360 && mouseY < 400 ) {
+		if (mouseY > 360 && mouseY < 400) {
 			ship.setPositionY(mouseY);
 		}
 	}
@@ -313,25 +329,25 @@ public class TheApp extends PApplet {
 	@Override
 	public void keyPressed() {
 		if (key == 's' || key == 'S') {
-			if (superMode) {
+			if (isSuperMode) {
 				shipController.handleEvent(Event.SUPERMODEOFF);
-				superMode = false;
+				isSuperMode = false;
 			} else {
 				shipController.handleEvent(Event.SUPERMODEON);
-				superMode = true;
+				isSuperMode = true;
 			}
 		}
 
-		if (key == 'r' || key == 'R' && gameOver) {
-			
+		if ((key == 'r' || key == 'R') && isGameOver) {
+
 			score = 0;
-			gameOver = false;
-			superMode = false;
+			lifeCount = 3;
+			isGameOver = false;
+			isSuperMode = false;
 			setup();
 			background(255);
 			loop();
 		}
 	}
-
 
 }
